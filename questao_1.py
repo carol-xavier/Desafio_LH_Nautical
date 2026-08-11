@@ -80,3 +80,13 @@ plt.title('Distribution of Order Total')
 plt.ylabel('Order Total (R$)')
 
 plt.show()
+
+# %%
+"""
+=============================================================================
+1.4 Diagnóstico
+=============================================================================
+"""
+conclusion = "A análise exploratória inicial indica que a tabela 'orders' requer validações adicionais antes de \nser utilizada em análises definitivas. A coluna `salesperson_id` apresenta 24.131 valores nulos, \naproximadamente 49,25% dos registros, o que pode impactar análises relacionadas ao desempenho \ndos vendedores. A coluna `total` não apresenta valores negativos ou nulos, porém foram identificados \n452 possíveis outliers pelo critério do IQR. Esses registros não devem ser considerados erros \nautomaticamente, pois podem representar pedidos de alto valor e precisam ser investigados. Além disso, \n`created_at` está armazenada em formato textual e deverá ser convertida para um tipo de data/hora \nem uma etapa posterior de tratamento. Portanto, a tabela é adequada para uma análise exploratória inicial, \nmas não está pronta para análises definitivas sem tratamento prévio, principalmente em relação aos valores \nausentes, ao formato das datas e aos possíveis outliers."
+
+print(conclusion)

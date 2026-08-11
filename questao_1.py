@@ -54,3 +54,29 @@ min_value = df_orders['total'].min() # Verificar o valor mínimo de pedidos
 avg_ticket = df_orders['total'].mean() # Verificar o valor médio de pedidos 
 print(f"O valor máximo de pedidos é de R$ {max_value:.2f}, o valor mínimo de pedidos é de R$ {min_value:.2f} e o valor médio é R$ {avg_ticket:.2f}.") # Imprimir os valores máximo e mínimo de pedidos
 
+# %%
+"""
+=============================================================================
+1.3 Avaliação de outliers
+=============================================================================
+"""
+q1 = np.percentile(df_orders['total'], 25)
+q3 = np.percentile(df_orders['total'], 75)
+iqr = q3 - q1
+
+lower_limit = q1 - 1.5 * iqr
+upper_limit = q3 + 1.5 * iqr
+
+outliers = df_orders[(df_orders['total'] < lower_limit) | (df_orders['total'] > upper_limit)]
+print(f"Total outliers detected: {len(outliers)}\nValores acima de R$ {upper_limit:.2f} foram detectados como outliers.")
+
+# %%
+# Visualização dos quartis e outliers
+plt.figure(figsize=(8, 5))
+
+sns.boxplot(data=df_orders, y='total')
+
+plt.title('Distribution of Order Total')
+plt.ylabel('Order Total (R$)')
+
+plt.show()

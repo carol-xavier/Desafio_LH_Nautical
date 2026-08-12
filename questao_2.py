@@ -77,3 +77,25 @@ def infer_column_type(values):
             return "DATE"
 
     return "text"
+
+# %%
+# Função de validação para verificar as funções de inferência de tipos de dados e gerar o schema do banco de dados
+def check_tables():
+    for file in files:
+        with open(file, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+
+            columns = reader.fieldnames
+            data = list(reader)
+
+        print(f"\nArquivo: {file}")
+        print(f"Linhas: {len(data)}")
+        print(f"Colunas: {len(columns)}")
+
+        for column in columns:
+            values = [row[column] for row in data]
+            column_type = infer_column_type(values)
+
+            print(f"{column}: {column_type}")
+    
+check_tables()

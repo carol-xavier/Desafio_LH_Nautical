@@ -64,19 +64,19 @@ def infer_column_type(values):
     if all(t == "INTEGER" for t in types):
         return "INTEGER"
 
-    if all(t == "boolean" for t in types):
+    if all(t == "BOOLEAN" for t in types):
             return "BOOLEAN"
 
-    if all(t in ("integer", "float") for t in types):
+    if all(t in ("INTEGER", "FLOAT") for t in types):
         return "FLOAT"
 
-    if all(t == "timestamp" for t in types):
+    if all(t == "TIMESTAMP" for t in types):
         return "TIMESTAMP"
 
-    if all(t == "date" for t in types):
+    if all(t == "DATE" for t in types):
             return "DATE"
 
-    return "text"
+    return "TEXT"
 
 # %%
 # Função de validação para verificar as funções de inferência de tipos de dados e gerar o schema do banco de dados

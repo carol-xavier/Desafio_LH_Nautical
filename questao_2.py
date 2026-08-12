@@ -99,3 +99,51 @@ def check_tables():
             print(f"{column}: {column_type}")
     
 check_tables()
+
+# %%
+# Função para gerar o comando SQL CREATE_TABLE com base no nome da tabela, colunas e linhas
+def generate_create_table(table_name, columns, rows):
+    sql = f"CREATE TABLE {table_name} (\n"
+
+    column_definitions = []
+
+    for column in columns:
+        values = [row[column] for row in rows]
+        data_type = infer_column_type(values)
+
+        column_definitions.append(
+            f"    {column} {data_type}"
+        )
+
+    sql += ",\n".join(column_definitions)
+    sql += "\n);\n"
+
+    return sql
+
+# %%
+# Função para gerar o schema do banco de dados com base nos arquivos CSV presentes na pasta "data"
+def generate_schema():
+    schema = []
+
+    for file in files:
+
+        table_name = os.path.splitext(os.path.basename(file))[0]
+
+        with open(file, "r", encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f)
+
+            columns = reader.fieldnames
+            rows = list(reader)
+
+        create_table = generate_create_table(
+            table_name,
+            columns,
+            rows
+        )
+
+        schema.append(create_table)
+
+    with open("schema.sql", "w", encoding="utf-8") as f:
+        f.write("\n".join(schema))
+
+generate_schema()

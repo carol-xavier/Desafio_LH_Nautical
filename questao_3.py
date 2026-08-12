@@ -47,7 +47,7 @@ def get_csv_columns(file_path):
 ### psql -h db_host -U db_user -d db_name -f schema.sql
 
 # Funções para carregar os dados de um arquivo CSV em uma tabela do PostgreSQL
-def load_csv(conn, file_path, table_name):
+def load_csv(connection, file_path, table_name):
     columns = get_csv_columns(file_path)
 
     copy_query = sql.SQL(
@@ -58,7 +58,7 @@ def load_csv(conn, file_path, table_name):
     )
 
     with open(file_path, "r", encoding="utf-8", newline="") as file:
-        with conn.cursor() as cur:
+        with connection.cursor() as cur:
             with cur.copy(copy_query) as copy:
                 while data := file.read(8192):
                     copy.write(data)
@@ -71,12 +71,12 @@ def main():
         if file_name.lower().endswith(".csv")
     )
 
-    with psycopg.connect(**DB_CONFIG) as conn:
+    with psycopg.connect(**DB_CONFIG) as connection:
         for file_name in csv_files:
             table_name = os.path.splitext(file_name)[0]
             file_path = os.path.join(CSV_DIR, file_name)
 
-            load_csv(conn, file_path, table_name)
+            load_csv(connection, file_path, table_name)
 
             print(f"{file_name} carregado em {table_name}")
 

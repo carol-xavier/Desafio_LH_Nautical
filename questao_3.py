@@ -30,3 +30,12 @@ DB_CONFIG = {
     "host": DB_HOST,
     "port": DB_PORT,
 }
+
+# Variável global para definir o diretório onde os arquivos CSV estão localizados
+CSV_DIR = "data"
+
+# Função para obter os nomes das colunas de um arquivo CSV
+def get_csv_columns(file_path):
+    with open(file_path, "r", encoding="utf-8", newline="") as file:
+        reader = csv.reader(file)
+        return next(reader)

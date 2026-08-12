@@ -22,15 +22,23 @@ files = [
 def infer_type(value):
     value = value.strip()
 
+    INTEGER_MIN = -2147483648
+    INTEGER_MAX = 2147483647
+
     if value == "":
         return "empty"
 
     if value.lower() in ("true", "false"):
         return "BOOLEAN"
 
+    if value.isdigit() and len(value) > 1 and value.startswith("0"):
+        return "TEXT"
+
     try:
-        int(value)
-        return "INTEGER"
+        integer_value = int(value)
+        if INTEGER_MIN <= integer_value <= INTEGER_MAX:
+            return "INTEGER"
+        return "TEXT"
     except ValueError:
         pass
 

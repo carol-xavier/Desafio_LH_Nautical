@@ -6,6 +6,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # %%
+"""
+Escolha qual query você deseja executar, descomentando a linha correspondente abaixo e comentando as demais.
+"""
+# file_path = "all_customers.sql"  # Calcula ticket médio e diversidade para todos os clientes
+# file_path = "top_10_customers.sql"  # Calcula e seleciona os clientes fiéis, os 10 clientes com maior ticket médio e diversidade
+file_path = "top_category.sql"  # Calcula e seleciona a categoria mais comprada, com maior ticket médio e diversidade
+
+# %%
 # Importando as variáveis de ambiente do arquivo .env
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")

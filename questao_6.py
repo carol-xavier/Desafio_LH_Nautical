@@ -123,4 +123,5 @@ def mae(actual, predicted):
     
     return sum(errors) / len(errors)
 
-mae_walk_forward = print(mae(test, walk_forward_forecasts))
+mae_walk_forward = mae(test, walk_forward_forecasts)
+print(mae_walk_forward)

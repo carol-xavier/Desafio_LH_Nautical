@@ -86,5 +86,5 @@ def main():
 if __name__ == "__main__":
     main()
 
-# Run the comand below to execute the script (in the terminal, in the same directory as the script):
+# Rode o comando abaixo para executar o script (no terminal, no mesmo diretório do script):
 # python questao_3.py

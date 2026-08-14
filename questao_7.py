@@ -1,30 +1,22 @@
 # %%
-import os
-
 import pandas as pd
-import psycopg
-from dotenv import load_dotenv
+from database import get_connection
 from sklearn.metrics.pairwise import cosine_similarity
 
 
 TARGET_PRODUCT_ID = 180
 TOP_N = 5
+QUERY_PATH = "./queries/questao_7.sql" 
 
+def execute_query(connection, query_path):
 
-def get_database_connection():
-    """
-    Cria e retorna uma conexão com o banco PostgreSQL.
-    """
-    load_dotenv()
+    with open(query_path, "r", encoding="utf-8") as file:
+        query = file.read()
 
-    return psycopg.connect(
-        dbname=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT")
-    )
+    with connection.cursor() as cursor:        
+        cursor.execute(query)
 
+        return cursor.fetchall()
 
 def load_customer_product_interactions():
     """
@@ -33,28 +25,12 @@ def load_customer_product_interactions():
     Como a matriz usuário-item da questão é binária, múltiplas compras
     do mesmo produto pelo mesmo cliente são consideradas apenas uma vez.
     """
-    query = """
-        SELECT DISTINCT
-            o.customer_id,
-            p.id AS product_id,
-            p.name AS product_name
-        FROM orders AS o
-        JOIN order_items AS oi
-            ON o.id = oi.order_id
-        JOIN product_variants AS pv
-            ON oi.product_variant_id = pv.id
-        JOIN products AS p
-            ON pv.product_id = p.id
-        WHERE o.customer_id IS NOT NULL;
-    """
 
-    with get_database_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute(query)
-            rows = cur.fetchall()
+    with get_connection() as connection:
+        result = execute_query(connection, QUERY_PATH)
 
     return pd.DataFrame(
-        rows,
+        result,
         columns=[
             "customer_id",
             "product_id",
@@ -163,4 +139,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-# %%

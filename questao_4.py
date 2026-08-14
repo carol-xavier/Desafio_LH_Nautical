@@ -1,37 +1,17 @@
 # %%
-import os
 import psycopg
-from dotenv import load_dotenv
 
-load_dotenv()
+from database import get_connection
 
-# %%
+
 """
 Escolha qual query você deseja executar, descomentando a linha correspondente abaixo e comentando as demais.
 """
-# file_path = "all_customers.sql"  # Calcula ticket médio e diversidade para todos os clientes
-# file_path = "top_10_customers.sql"  # Calcula e seleciona os clientes fiéis, os 10 clientes com maior ticket médio e diversidade
-file_path = "top_category.sql"  # Calcula e seleciona a categoria mais comprada, com maior ticket médio e diversidade
-
-# %%
-# Importando as variáveis de ambiente do arquivo .env
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
+#QUERY_PATH = "./queries/all_customers.sql"  # Calcula ticket médio e diversidade para todos os clientes
+#QUERY_PATH = "./queries/top_10_customers.sql"  # Calcula e seleciona os clientes fiéis, os 10 clientes com maior ticket médio e diversida
+QUERY_PATH = "./queries/top_category.sql"  # Calcula e seleciona a categoria mais comprada, com maior ticket médio e diversidade
 
 
-# Configuração do banco de dados para conexão
-DB_CONFIG = {
-    "dbname": DB_NAME,
-    "user": DB_USER,
-    "password": DB_PASSWORD,
-    "host": DB_HOST,
-    "port": DB_PORT,
-}
-
-# %%
 def execute_query(connection, query_path):
 
     with open(query_path, "r", encoding="utf-8") as file:
@@ -43,14 +23,15 @@ def execute_query(connection, query_path):
         return cursor.fetchall()
     
 
-# %%
 def main():
     try:
-        with psycopg.connect(**DB_CONFIG) as connection:
-            result = execute_query(connection, file_path)
+        with get_connection() as connection:
+            result = execute_query(connection, QUERY_PATH)
 
             for row in result:
                 print(row)
+
+            connection.close()
 
     except psycopg.Error as error:
         print(f"Database error: {error}")

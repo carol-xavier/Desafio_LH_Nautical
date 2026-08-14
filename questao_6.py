@@ -1,6 +1,7 @@
 # %%
 import os
 import psycopg
+from datetime import date
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,8 +21,6 @@ DB_CONFIG = {
     "host": DB_HOST,
     "port": DB_PORT,
 }
-
-# %%
 
 connection = psycopg.connect(**DB_CONFIG)
 
@@ -66,20 +65,19 @@ cursor.execute(query)
 
 result = cursor.fetchall()
 
-for row in result:
-    print(row)
-
 connection.close()
-# %%
+
 monthly_sales = {
     month: units
     for month, units in result
 }
 
-# %%
-# Separar dados de treino e de teste conforme delimitado pelo tech lead
-from datetime import date
 
+"""
+=============================================================================
+Separar dados de treino e de teste conforme delimitado pelo tech lead
+=============================================================================
+"""
 train = {
     month: units
     for month, units in monthly_sales.items()
@@ -92,10 +90,10 @@ test = {
     if date(2026, 1, 1) <= month <= date(2026, 3, 1)
 }
 
-# %%
+
 """
 =============================================================================
-Walk-forward
+Modelo Walk-forward
 =============================================================================
 """
 # Abordagem considerando que as compras com os fornecedores acontece mês a mês.
@@ -115,31 +113,7 @@ for month in sorted(test):
     # Após prever o mês, seu valor real passa a fazer parte do histórico
     history[month] = test[month]
 
-# %%
-"""
-=============================================================================
-Recursivo
-=============================================================================
-"""
-# Abordagem considerando que as compras são feitas com muitos meses em avanço. 
-# Portanto, não teriamos dados reais e o modelo precisa se limitar aos dados de treino (até 31/12/25).
-history = dict(train)
-recursive_forecasts = {}
 
-for month in sorted(test):
-    previous_months = sorted(history)[-3:]
-
-    forecast = sum(
-        history[m] for m in previous_months
-    ) / 3
-
-    recursive_forecasts[month] = forecast
-
-    # Diferença para o walk-forward: usaremos apenas os valores disponíveis até 31/12/25!
-    history[month] = forecast
-
-
-# %%
 # Cálculo do Mean Absolute Error para avaliação do modelo
 def mae(actual, predicted):
     errors = [
@@ -150,4 +124,3 @@ def mae(actual, predicted):
     return sum(errors) / len(errors)
 
 mae_walk_forward = print(mae(test, walk_forward_forecasts))
-mae_recursive = print(mae(test, recursive_forecasts))
